@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SHABANG:
+# SHEBANG:
 # As seen on line 1, #! followed by path to the interpreter for the script
 # Syntax:
 #   #!/path/to/interpreter
