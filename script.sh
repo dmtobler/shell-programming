@@ -2,6 +2,8 @@
 
 #SHABANG:
 # As seen on line 1, #! followed by path to the interpreter for the script
+# Syntax:
+#   #!/path/to/interpreter
 # Put this on the first line of the shell script in order to avoid complications
 
 # Scripts:
@@ -126,3 +128,149 @@ echo "You are running this script on ${SERVER_NAME}."
 
 [ 100 -eq 100 ]
 [ 50 -le 100 ]
+
+# IF/ELSE/ELIF STATEMENTS:
+
+# Similar to if statements in other languages. If the test condition is met, the commands between
+# 'then' and 'fi' are executed
+
+# Syntax:
+# if [ condition-is-true ]
+# then
+#   command 1
+#   command 2
+#   command n
+# fi
+
+MY_DOG="win"
+
+if [ "$MY_DOG" = "win" ]
+then
+  echo "You seem to like wiggle butts."
+fi
+
+# Note: In the example above, we follow the best practice of enclosing variables in quotes to prevent
+# unexpected side-effects when performing conditional tests.
+
+# Like other programming languages, we can include an else statement to execute if the condition
+# is not true:
+
+if [ "$MY_DOG" = "moonstar" ]
+then
+  echo "He was a good boy..."
+else
+  echo "We have another good boy around now."
+fi
+
+# Again, as in other languages we can have an else-if (elif) to evaluate for another true condition
+# if the first one is false
+
+MY_CAT="waffles"
+
+if [ "$MY_CAT" = "kit" ]
+then
+  echo "Yep, that's my cat."
+elif [ "$MY_CAT" = "waffles" ]
+then
+  echo "Yep, that's my cat."
+else
+  echo "No, that's not my cat."
+fi
+
+# FOR LOOPS:
+
+# Used for performing actions on lists of items.
+# Each item in the list is sequentially assigned to the variable and then the code block is executed.
+
+# Syntax:
+# for VARIABLE_NAME in ITEM_1 ITEM_N
+# do
+#   command 1
+#   command 2
+#   command n
+# done
+
+for COLOR in red green blue
+do
+  echo "COLOR: $COLOR"
+done
+
+# It is relatively common for the list of items to be stored in a variable to be referenced, as
+# shown below:
+
+COLORS="orange purple pink"
+
+for COLOR in $COLORS
+do
+  echo "COLOR: $COLOR"
+done
+
+# The following example renames all files ending in .jpg by inserting today's date before the
+# original filename:
+
+PICTURES=$(ls *jpg)
+DATE=$(date +%F)
+
+for PICTURE in $PICTURES
+do
+  echo "Renaming ${PICTURE} to ${DATE}-${PICTURE}"
+  mv ${PICTURE} ${DATE}-${PICTURE}
+done
+
+# POSITIONAL PARAMETERS:
+
+# Variables that contain the contents of the command line.
+# For example:
+# $ script.sh parameter1 parameter2 parameter3
+
+# Would equate to...
+# $0:"script.sh"
+# $1:"parameter1"
+# $2:"parameter2"
+# $3:"parameter3"
+
+# This script accepts a username parameter:
+
+echo "Executing script: $0"
+echo "Archiving user: $1"
+
+# Lock the account
+passwd -l $1
+
+# Crate an archive of the home directory
+tar cf /archives/${1}.tar.gx /home/${1}
+
+# We can also assign positional parameters as variables, as seen below:
+
+USER=$1 # The first parameter is the user
+echo "Executing script: $0"
+echo "Archiving user: $USER"
+
+# Lock the account
+passwd -l $USER
+
+# Create an archive of the home directory
+tar cf /archives/${USER}.tar.gz /home/${USER}
+
+# To access ALL the parameters from $1 to $n, we use the $@ command
+
+echo "Executing script: $0"
+for USER in "$@"
+do
+  echo "Archiving user: $USER"
+  passwd -l $USER
+  tar cf /archives/${USER}.tar.gz /home/${USER}
+done
+
+# ACCEPTING USER INPUT (STDIN)
+
+# The read command accepts STDIN
+# Syntax:
+#   read -p "PROMPT" VARIABLE
+
+# We can edit the script above to ask for the username
+
+read -p "Enter a username: " USER
+echo "Archiving user: $USER"
+passwd -l $USER
+tar cf /archives/${USER}.tar.gz /home/${USER}
